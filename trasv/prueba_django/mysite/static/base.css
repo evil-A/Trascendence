@@ -1,0 +1,204 @@
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
+
+:root
+{
+  --clr: #222327;
+  --bkg: #fff;
+}
+
+*
+{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Poopins', sans-serif;
+}
+
+/* hasta aqui el código nuevo */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+
+  /* font-family: verdana;
+  font-size: 80%; */
+}
+
+main{
+  display: flex;
+  /*flex: 1;*/
+  width: 99vw;
+  min-height: 85vh;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  /*box-sizing: border-box;*/
+}
+
+.container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+
+th {
+  background-color: #ddeeff;
+  font-weight: normal;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 4px;
+  margin: 2px;
+}
+
+/* proyect primary buttons */
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-group button {
+  width: 48%; /* Ajusta el ancho según tus preferencias */
+}
+
+button {
+  padding: 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  width: 180px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #18b300;
+}
+
+/* footer sections */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: left;
+  height: 5vh;
+  padding: 10px;
+  margin-left: 10px;
+  margin-top: 10px;
+  width: 94vw;
+}
+
+/* navigation menu */
+.navigation{
+  height: 70px;
+  position: relative;
+  display: flex;
+  border-radius: 10px;
+  background: var(--clr);
+  text-align: left;
+  padding: 10px;
+  width: 99vw;
+}
+
+/* menú sections */
+.navigation ul
+{
+  display: flex;
+  width: 350px;
+}
+
+.navigation ul li
+{
+  position: relative;
+  list-style: none;
+  width: 70px;
+  height: 70px;
+  z-index: 1;
+}
+
+.navigation ul li a
+{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+}
+
+.navigation ul li a .icon
+{
+  position: relative;
+  display: block;
+  line-height: 75px;
+  font-size: 1.5em;
+  text-align: center;
+  transition: 0.5s;
+  color: var(--bkg);
+}
+
+.navigation ul li:hover a .icon
+{
+  transform: translateY(-35px);
+}
+
+.navigation ul li a .text
+{
+  position: absolute;
+  color: var(--bkg);
+  font-weight: 400;
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  transition: 0.5s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.navigation ul li:hover a .text
+{
+  opacity: 1;
+  transform: translateY(10px);
+}
+
+/* languages */
+.language-container{
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px; /* Añade un relleno para separar del borde derecho */
+}
+
+.language-list {
+  list-style: none;
+  padding: 0;
+}
+
+.language-list li {
+  margin-bottom: 10px;
+}
+
+.language-list li a {
+  text-decoration: none;
+  color: #333; /* Cambia el color del texto según sea necesario */
+  display: flex;
+  align-items: center;
+}
+
+.language-list li img {
+  width: 30px; /* Ajusta el tamaño de la imagen según sea necesario */
+  margin-right: 10px; /* Añade espacio entre la imagen y el texto */
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="static/torneos.css"/>
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+</head>
+<body>
+
+<h1>{% trans "Tournament information" %}</h1>
+
+<p><a href="{% url 'home' %}">{% trans "Home" %}</a></p>
+
+<table>
+    {% for torneo in torneos %}
+        <tr>
+            <th rowspan='3'>{% trans "Phase" %}</th>
+            <th>{% trans "Tournament name" %}</th>
+            <th>{% trans "Start of registration" %}</th>
+            <th>{% trans "End of registration" %}</th>
+            <th>{% trans "Start of matches" %}</th>
+            <th>{% trans "Maximum match duration in minutes" %}</th>
+            <th>{% trans "Minutes between matches" %}</th>
+        </tr>
+        <tr>
+            <td>{{ torneo.copy.nombre }}</td>
+            <td>{{ torneo.copy.comienzo_inscripcion }}</td>
+            <td>{{ torneo.copy.fin_inscripcion }}</td>
+            <td>{{ torneo.copy.comienzo_partidos }}</td>
+            <td>{{ torneo.copy.minutos_duracion_maxima_partidos }}</td>
+            <td>{{ torneo.copy.minutos_entre_partidos }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Players registered" %}</th>
+            <td colspan='5'>{{ torneo.copy.jugadores.all|join:", " }}</td>
+        </tr>
+        {% for faseTorneo in torneo.fases %}
+        <tr>
+            <td rowspan='2' valign='top'>{{ faseTorneo.fase }}</td>
+            <th>{% trans "Matches and results" %}</th>
+            <td colspan='5'>{{ faseTorneo.lista_partidos_resultados }}</td>
+        </tr>
+        <tr>
+            <th>{% trans "Winners" %}</th>
+            <td colspan='5'>{{ faseTorneo.ganadores.all|join:", " }}</td>
+        </tr>
+        {% endfor %}        
+        <tr><td colspan='7'></td></tr>
+    {% endfor %}
+</table>
+
+<p><a href="{% url 'home' %}">{% trans "Home" %}</a></p>
+
+</body>
+</html>

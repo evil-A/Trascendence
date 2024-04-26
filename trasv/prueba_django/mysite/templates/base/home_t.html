@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<!--<link rel="stylesheet" href="static/base.css">-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../static/base.css">
+
+<!-- href="static/base.css"/>-->
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+<meta http-equiv="refresh" content="5">
+</head>
+<body>
+<!-- MENU NAVIGATION BAR -->
+<div class="navigation">
+  <ul>
+    <li class="list">
+      <a href="#" onclick="showPage('home')">
+        <span class="icon"><ion-icon name="home"></ion-icon></span>
+        <span class="text">home</span>
+      </a>
+    </li>
+    <li class="list" >
+      <a href="#" onclick="showPage('game')">
+        <span class="icon"><ion-icon name="logo-game-controller-a"></ion-icon></span>
+        <span class="text">game</span>
+      </a>
+    </li>
+    <li class="list">
+      <a href="#" onclick="showPage('live')">
+        <span class="icon"><ion-icon name="pulse"></ion-icon></span>
+        <span class="text">live</span>
+      </a>
+    </li>
+    <li class="list">
+      <a href="#" onclick="showPage('stats')">
+        <span class="icon"><ion-icon name="stats"></ion-icon></span>
+        <span class="text">stats</span>
+      </a>
+    </li>
+    <li class="list">
+      <a href="#" onclick="showPage('settings')">
+        <span class="icon"><ion-icon name="settings"></ion-icon></span>
+        <span class="text">options</span>
+      </a>
+    </li>
+    <li class="list">
+      <a href="#" onclick="showPage('usrprofile')">
+        <span class="icon"><ion-icon name="people"></ion-icon></span>
+        <span class="text">profile</span>
+      </a>
+    </li>
+  </ul>
+  <p>
+    <a href="{% url 'en' %}">English</a>&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'es' %}">Español</a>&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'fr' %}">Français</a>
+  </p>
+</div>
+
+
+ <!-- PRIMARY CONTENT SECTION -->
+      <!-- en esta seccion se abren diferentes divs para albergar todas las páginas del sitio
+           en un site mono página -->
+<main>
+  <div id="home" class="page">
+    <div class="container">
+<h1>{% trans "Pong game" %}</h1>
+
+{% if request.user.is_authenticated %}
+  <p>{% trans "User" %}: {{ request.user.username }}</p>
+  <p><a href="{% url 'logout' %}">{% trans "Logout" %}</a></p>
+  <table width='250'>
+    <tr><th>{% trans "Quick match" %}</th></tr>
+    <tr>
+      <td>
+        <p><a href="{% url 'arranque_rapido' %}">{% trans "Play" %}</a></p>
+        <p><a href="{% url 'partidos_mlist' %}">{% trans "List of my matches" %}</a></p>
+        <p><a href="{% url 'partidos_list' %}">{% trans "List of matches" %}</a></p>
+      </td>
+    </tr>
+  </table>
+  <table width='250'>
+    <tr><th>{% trans "Tournaments" %}</th></tr>
+    <tr>
+      <td>
+        <p><a href="{% url 'torneos_inscripcion_list' %}">{% trans "Tournament registration" %}</a></p>
+        <p><a href="{% url 'torneos_info_list' %}">{% trans "Tournament information" %}</a></p -->
+        {% if jugar %}
+          <p><a href="{% url 'arranque_torneo' %}">{% trans "Tournament play" %}</a></p>
+        {% endif %}
+        {% if hayProximosTorneos %}
+        <p>{% trans "Upcoming tournaments" %}</p>
+        <ul>
+        {% for t_torneo in proximosTorneos %}
+          <li>{{ t_torneo }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        {% if request.user.is_superuser or request.user.is_staff %}
+           <p><a href="torneos_admin">{% trans "Tournament administration" %}</a></p>
+           <!-- <p><a href="torneos_mantenimiento">mantenimiento</a></p> -->
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+{% else %}
+<!-- esta es la parte que se vé cuando no estamos logueados -->
+  <p><a href="{% url 'login' %}">{% trans "Login" %}</a></p>
+  <p><a href="{% url 'signup' %}">{% trans "Signup" %}</a></p>
+{% endif %}
+
+</div>
+</div>
+</main>
+<footer>
+  (c) 42Madrid excentric pong
+</footer>
+
+
+<script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="static/partidos.css"/>
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+</head>
+<body>
+
+<h1>{% trans "List of my matches" %}</h1>
+
+<p><a href="{% url 'home' %}">{% trans "Home" %}</a></p>
+
+<table>
+    <tr>
+        <th>{% trans "Player 1" %}</th>
+        <th>{% trans "Score player 1" %}</th>
+        <th>{% trans "Player 2" %}</th>
+        <th>{% trans "Score player 2" %}</th>
+        <th>{% trans "Beginning" %}</th>
+        <!-- <th>{% trans "Ending" %}</th> -->
+        <th>{% trans "Duration" %}</th>
+    </tr>
+    {% for partido in partidos %}
+        <tr>
+            <td>{{ partido.jugador1.username }}</td>
+            <td>{{ partido.jugador1_marcador }}</td>
+            <td>{{ partido.jugador2.username }}</td>
+            <td>{{ partido.jugador2_marcador }}</td>
+            <td>{{ partido.comienzo }}</td>
+            <!-- <td>{{ partido.fin }}</td> -->
+            <td>{{ partido.duracion }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<p><a href="{% url 'home' %}">{% trans "Home" %}</a></p>
+
+</body>
+</html>

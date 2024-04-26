@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<!--<link rel="stylesheet" href="static/base.css"/>-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../static/base.css">
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+</head>
+<body>
+<!-- MENU NAVIGATION BAR -->
+<div class="navigation">
+    <ul>
+      <li class="list">
+        <a href="#" onclick="showPage('home')">
+          <span class="icon"><ion-icon name="home"></ion-icon></span>
+          <span class="text">home</span>
+        </a>
+      </li>
+      <li class="list" >
+        <a href="#" onclick="showPage('game')">
+          <span class="icon"><ion-icon name="logo-game-controller-a"></ion-icon></span>
+          <span class="text">game</span>
+        </a>
+      </li>
+      <li class="list">
+        <a href="#" onclick="showPage('live')">
+          <span class="icon"><ion-icon name="pulse"></ion-icon></span>
+          <span class="text">live</span>
+        </a>
+      </li>
+      <li class="list">
+        <a href="#" onclick="showPage('stats')">
+          <span class="icon"><ion-icon name="stats"></ion-icon></span>
+          <span class="text">stats</span>
+        </a>
+      </li>
+      <li class="list">
+        <a href="#" onclick="showPage('settings')">
+          <span class="icon"><ion-icon name="settings"></ion-icon></span>
+          <span class="text">options</span>
+        </a>
+      </li>
+      <li class="list">
+        <a href="#" onclick="showPage('usrprofile')">
+          <span class="icon"><ion-icon name="people"></ion-icon></span>
+          <span class="text">profile</span>
+        </a>
+      </li>
+    </ul>
+    <div class="language-container">
+        <ul class="language-list">
+            <li><a href="{% url 'es' %}" class="language-link"><img src="../../static/es-flag.png" alt="Español"> Español</a></li>
+            <li><a href="{% url 'en' %}" class="language-link"><img src="../../static/en-flag.png" alt="English"> English</a></li>
+            <li><a href="{% url 'fr' %}" class="language-link"><img src="../../static/fr-flag.png" alt="English"> Français</a></li>
+        </ul>
+    </div>
+
+   <!-- <p>
+      <a href="{% url 'en' %}">English</a>&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'es' %}">Español</a>&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'fr' %}">Français</a>
+    </p>-->
+  </div>
+  
+  
+   <!-- PRIMARY CONTENT SECTION -->
+        <!-- en esta seccion se abren diferentes divs para albergar todas las páginas del sitio
+             en un site mono página -->
+  <main>
+
+<div id="home" class="page">
+    <div class="container">
+        <h1>{% trans "Welcome!" %} {% trans "Login" %}</h1>
+        <!--<h1>{% trans "Login" %}</h1>-->
+        <form method="POST">
+            {% csrf_token %}
+            <table>
+            {{ form.as_table }}
+            </table>
+            
+            <div class="button-group">
+                <p><button type="submit">{% trans "Login" %}</button></p>
+                <p><button type="reset">clear</button></p>
+            </div>
+            <!-- todavia no estamos dados de alta en la bbdd -->
+            <p align = "center"><a href="{% url 'signup' %}">{% trans "I haven't signedup yet" %}</a></p>
+        </form>
+    </div>
+</div>
+</main>
+<footer>
+  (c) 42Madrid excentric pong
+</footer>
+<script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+</html>

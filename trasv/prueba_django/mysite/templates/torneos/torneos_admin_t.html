@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="static/torneos.css"/>
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+</head>
+<body>
+
+<h1>{% trans "Tournament administration" %}</h1>
+
+<p><a href="{% url 'home' %}">{% trans "Home" %}</a></p>
+
+<p><a href="torneos_edit">{% trans "New" %}</a></p>
+            
+<table>
+    <tr>
+        <th>{% trans "Edit" %}</th>
+        <th>{% trans "Delete" %}</th>
+        <th>{% trans "Tournament name" %}</th>
+        <th>{% trans "Start of registration" %}</th>
+        <th>{% trans "End of registration" %}</th>
+        <th>{% trans "Start of matches" %}</th>
+        <th>{% trans "Maximum match duration in minutes" %}</th>
+        <th>{% trans "Minutes between matches" %}</th>
+    </tr>
+    <tr><td colspan='8'></td></tr>
+    {% for torneo in torneos %}
+        <tr>
+            <td><a href="torneos_edit?idTorneo={{ torneo.id }}">{% trans "Edit" %}</a></td>
+            <td><a href="torneos_delete?idTorneo={{ torneo.id }}">{% trans "Delete" %}</a></td>
+            <td>{{ torneo.nombre }}</td>
+            <td>{{ torneo.comienzo_inscripcion }}</td>
+            <td>{{ torneo.fin_inscripcion }}</td>
+            <td>{{ torneo.comienzo_partidos }}</td>
+            <td>{{ torneo.minutos_duracion_maxima_partidos }}</td>
+            <td>{{ torneo.minutos_entre_partidos }}</td>
+        </tr>
+        <tr>
+            <th colspan='2'>{% trans "Players registered" %}</th>
+            <td colspan='6'>{{ torneo.jugadores.all|join:", " }}</td>
+        </tr>
+        <tr><td colspan='8'></td></tr>
+    {% endfor %}
+</table>
+
+<p><a href="{% url 'home' %}">{% trans "Home" %}</a></p>
+
+</body>
+</html>

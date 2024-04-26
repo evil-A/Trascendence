@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="static/torneos.css"/>
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+</head>
+<body>
+
+<h1>{% trans "Edit tournement" %}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type='hidden' name='idTorneo' value='{{idTorneo}}'/>
+    <table>
+    {{ form.as_table }}
+    </table>
+    <p><button type="submit">{% trans "Save" %}</button></p>
+    <p><a href="{% url 'torneos_admin' %}">{% trans "Tournament administration" %}</a></p>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+<head>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="static/pantallaPong.css"/>
+<link rel="icon" type="image/x-icon" href="static/favicon.ico">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+
+const vDebug = false;
+
+const idPartido = {{ idPartido }}; // enviado por el servidor al generar el html
+const numJugador = {{ numJugador }}; // 1 o 2 // jugador 1 a la izquierda -- jugador 2 a la derecha
+const myLanguage = "{{ myLanguage }}"; 
+
+const limiteDuracionPartido = "{{ limiteDuracionPartido }}";
+const limitePuntosPartido = "20";
+
+const aj_keys = "aj_keys";
+const aj_status = "aj_status";
+
+const campo = { ancho: 800, alto: 400  };
+const sep = 15; // separación del jugador con el fondo de la pista
+const raqueta = { ancho: 10, alto: 80 };
+const pelota = { ancho: 15, alto: 15 };
+
+const margen = { arriba: 120, izq: 15 };
+const red = { ancho: 15, alto: campo.alto };
+
+const jugador1X0 = 0 - campo.ancho / 2 + sep; // 0 = centro
+const jugador2X0 = 0 + campo.ancho / 2 - sep; // 0 = centro
+var jugador1Y0 = 0; // 0 = centro
+var jugador2Y0 = 0; // 0 = centro
+
+var stop = false;
+
+function jugadorY(ay) { // ay = 0 = centro,  [-alto / 2, +alto / 2]
+   return margen.arriba + campo.alto / 2 + ay;
+}
+
+function transXY(ax, ay) {
+   // ax = 0 = centro,  [-ancho / 2, +ancho / 2] 
+   // ay = 0 = centro,  [-alto / 2, +alto / 2]
+   var v = { x : margen.izq + campo.ancho / 2 + ax, y : margen.arriba + campo.alto / 2 + ay };
+   return v;
+}
+
+function setPosition(obj, x, y) {
+   obj.css({top: y + 'px', left: x + 'px', position: 'absolute'});
+}
+
+function setSize(obj, w, h) {
+   obj.css("width",w);
+   obj.css("height",h);
+}
+
+function setX(obj, x) {
+   obj.css({left: x + 'px', position: 'relative'});
+}
+
+function coloca() {
+  var oTabla = $("#tabla");
+  setX(oTabla, campo.ancho / 2  -  105);
+  //
+  var oSepara = $("#separa");
+  setSize(oSepara, 1, campo.alto);
+  //
+  var oCampo = $("#campo");
+  setPosition(oCampo, margen.izq, margen.arriba);
+  setSize(oCampo, campo.ancho, campo.alto);
+  //
+  var oRed = $("#red");
+  setPosition(oRed, margen.izq + campo.ancho / 2 - red.ancho / 2, margen.arriba);
+  setSize(oRed, red.ancho, red.alto);  
+  //
+  var oJugador1 = $("#jugador1");
+  var xyJugador1 = transXY(jugador1X0, jugador1Y0);
+  setPosition(oJugador1, xyJugador1.x - raqueta.ancho / 2,  xyJugador1.y - raqueta.alto / 2);
+  setSize(oJugador1, raqueta.ancho, raqueta.alto);  
+  //
+  var oJugador2 = $("#jugador2");
+  var xyJugador2 = transXY(jugador2X0, jugador2Y0);
+  setPosition(oJugador2, xyJugador2.x - raqueta.ancho / 2,  xyJugador2.y - raqueta.alto / 2);
+  setSize(oJugador2, raqueta.ancho, raqueta.alto);  
+  //
+  var oPelota = $("#pelota");
+  var xyPelota = transXY(0, 0);
+  setPosition(oPelota, xyPelota.x - pelota.ancho / 2,  xyPelota.y - pelota.alto / 2);
+  setSize(oPelota, pelota.ancho, pelota.alto);  
+  //
+  if (numJugador == 1)
+      $("#marca1").text("*");
+  else if (numJugador == 2) 
+      $("#marca2").text("*");
+  //    
+  var oInfo = $("#info");
+  setPosition(oInfo, sep, sep);
+  $("#limitePuntosPartido").text(limitePuntosPartido);
+  if (limiteDuracionPartido == "")
+    $("#limiteDuracionPartidoRow").hide();
+  else 
+    $("#limiteDuracionPartido").text(limiteDuracionPartido);
+}
+
+var nOk = 0;
+var nErr = 0;
+
+var sendingKey = false;
+
+function sendInfoToServer(key) {
+   sendingKey = true;
+   // text: down_begin, down_end, up_begin, up_end
+   var mensaje = idPartido.toString() + ";" + numJugador.toString() + ";" + key; // <<
+   var obj1 = { "mensaje": mensaje }; 
+   $.ajax({
+        url:   aj_keys,    // url que recibe la peticion
+        type:  'POST',    // metodo de envio
+        // contentType: 'application/json',
+        data:  obj1, // datos json que se envian a traves de ajax al servidor
+        dataType: 'json',
+        success: function (response) { // una vez que la url recibe el request lo procesa y devuelve response (vacio)
+              nOk++;
+              if (vDebug) {
+                  $("#getPostKeyOk").text("post key  ok --" + nOk);
+              }
+              sendingKey = false;
+         },
+         error:  function (error) { 
+              nErr++;
+              $("#getPostKeyErr").text("post key error -- " + nErr + " -- " + error.toString() );
+              sendingKey = false;
+          }
+   });
+   //sendingKey = false;
+}
+
+ function getCommandsFromServer() {
+   var mensaje = idPartido.toString() + ";" + myLanguage; // <<
+   var obj1 = { "mensaje": mensaje }; 
+   $.ajax({
+        url:   aj_status,    // url que recibe la peticion
+        type:  'POST',         // metodo de envio
+       // contentType: 'application/json',
+        data:  obj1, // datos json que se envian a traves de ajax al servidor
+        dataType: 'json',
+        success: function (response) { // una vez que la url recibe el request lo procesa y devuelve response
+              mensaje = response['mensaje'].toString();
+              nOk++;
+              if (vDebug) {
+                  $("#getPostStatusOk").text("post status ok --" + nOk + " -- " + mensaje);
+              }
+              processCommands(mensaje); // procesa el mensaje con la lista de comandos
+         },
+         error:  function (error) { 
+              nErr++;
+              $("#getPostStatusErr").text("post status error -- " + nErr + " -- " + error.toString() );
+          }
+    });
+}
+
+function processCommands(comandos) {    
+    // String comandos
+    var arrayCom = comandos.split(";");
+    var sizeCom= arrayCom.length;
+    for (var n = 0; n<sizeCom; n++) {
+        var parte = arrayCom[n];
+        var arrayParte = parte.split(",");
+        var sizeParte = arrayParte.length;
+        if (arrayParte[0]=="pcxy" && sizeParte>=3) {
+          var x = Number(arrayParte[1]);        
+          var y = Number(arrayParte[2]);  
+          var xyPelota = transXY(x, y);
+          var oPelota = $("#pelota");
+          setPosition(oPelota, xyPelota.x - pelota.ancho / 2,  xyPelota.y - pelota.alto / 2); 
+          oPelota.show();
+          continue;
+        }
+         if (arrayParte[0]=="pb" && sizeParte>=1) {
+          var oPelota = $("#pelota");
+          oPelota.hide();          
+          continue;
+        }
+        if (arrayParte[0]=="j1cy" && sizeParte>=2) {
+          var y = Number(arrayParte[1]);        
+          var xyJugador1 = transXY(jugador1X0, y);
+          var oJugador1 = $("#jugador1");
+          setPosition(oJugador1, xyJugador1.x - raqueta.ancho / 2,  xyJugador1.y - raqueta.alto / 2);
+          continue;      
+        }
+        if (arrayParte[0]=="j2cy" && sizeParte>=2) {
+          var y = Number(arrayParte[1]);        
+          var xyJugador2 = transXY(jugador2X0, y);
+          var oJugador2 = $("#jugador2");
+          setPosition(oJugador2, xyJugador2.x - raqueta.ancho / 2,  xyJugador2.y - raqueta.alto / 2);
+          continue;      
+        }
+        if (arrayParte[0]=="j1m" && sizeParte>=2) {
+          var puntos = arrayParte[1];        
+          var oMarcador1 = $("#marcador1");
+          oMarcador1.text(puntos);
+          continue;      
+        }
+        if (arrayParte[0]=="j2m" && sizeParte>=2) {
+          var puntos = arrayParte[1];        
+          var oMarcador2 = $("#marcador2");
+          oMarcador2.text(puntos);
+          continue;      
+        }
+        if (arrayParte[0]=="j1n" && sizeParte>=2) {
+          var nombre = arrayParte[1];        
+          var oNombre1 = $("#nombre1");
+          oNombre1.text(nombre);
+          continue;      
+        }
+        if (arrayParte[0]=="j2n" && sizeParte>=2) {
+          var nombre = arrayParte[1];        
+          var oNombre2 = $("#nombre2");
+          oNombre2.text(nombre);
+          continue;      
+        }
+        if (arrayParte[0]=="e" && sizeParte>=2) {
+          var estado = arrayParte[1];        
+          var oEstado = $("#estado");
+          oEstado.text(estado);
+          continue;      
+        }
+        if (arrayParte[0]=="stop") {
+            stop = true;
+            $("#b_volver").show();
+        }
+   }
+}
+
+var upArrow = false;
+var downArrow = false;
+
+function setKeydown() {
+    document.addEventListener('keydown', function(e) { // key begin
+        // up arrow 
+        if (e.which === 38 && ! upArrow) {
+            upArrow = true;
+            $("#tecla").text("↑"); 
+            sendInfoToServer("up_begin");
+      }
+      // down arrow
+      else if (e.which === 40 && ! downArrow) {
+          downArrow = true;
+          $("#tecla").text("↓");
+          sendInfoToServer("down_begin");
+     }
+   } );
+}
+
+function setKeyup() {
+    document.addEventListener('keyup', function(e) { // key end
+        // up arrow
+        if (e.which === 38 && upArrow) {
+            upArrow = false;
+            $("#tecla").text("_");
+            sendInfoToServer("up_end");
+      }
+      // down arrow
+      else if (e.which === 40 && downArrow) {
+            downArrow = false;
+            $("#tecla").text("_");
+            sendInfoToServer("down_end");
+     }
+   } );
+}
+
+function loop() {
+    if (stop) return;
+    if (! sendingKey)  getCommandsFromServer();
+    requestAnimationFrame(loop); // al siguiente frame ejecuta loop
+}
+
+function loop2() {
+    if (stop) return;
+    if (! sendingKey)  getCommandsFromServer();
+    setTimeout(loop2, 90);
+}
+
+$(document).ready(function(){
+    // al final se preparan lo eventos  cuando el documento está listo >>
+    setKeydown();
+    setKeyup();    
+    $("#b_volver").hide();
+    /*
+    $("#b_comandos").click(function(){
+        var comandos0 = $("#t_comandos").val();
+        var comandos = comandos0.replaceAll(" ","");
+        processCommands(comandos);
+    });
+    */
+    // se coloca todo >>
+    coloca();
+    //
+    // start the game
+    // requestAnimationFrame(loop); // old !!!!!!!!!!!!
+    loop2(); // new
+}); // << fin documento listo
+
+</script>
+</head>
+<body>
+
+<table id="tabla" align="center">
+<tr><td id="estado" colspan="2" width="200" align="center">&nbsp;</td></tr>
+<tr><td id="marca1" width="100" align="center">&nbsp;</td><td id="marca2" width="100" align="center">&nbsp;</td></tr>
+<tr><td id="nombre1" align="center">&nbsp;</td><td id="nombre2" align="center">&nbsp;</td></tr>
+<tr><td id="marcador1" align="center">&nbsp;</td><td id="marcador2" align="center">&nbsp;</td></tr>
+</table>
+<img src="static/img_w.png" id="separa" height="400" width="1"/>
+
+<!--
+<p>Comandos:</p>
+<input type="text" id="t_comandos" size="100" value=""/>
+<button id="b_comandos">hacer comandos</button>
+-->
+
+<p id="tecla">_</p>
+<p><button id="b_volver" onclick="location.href='{% url 'home' %}';">{% trans "back to home" %}</button></p>
+<p id="getPostStatusOk">_</p>
+<p id="getPostStatusErr">_</p>
+<p id="getPostKeyOk">_</p>
+<p id="getPostKeyErr">_</p>
+
+<!--
+<p>
+Formato: comando1,arg1, ... ;comando2, arg1, ...<br/>
+pcxy (x, y) = pelota-coord-x-y; pb = pelota-borrar; e (texto) = estado; stop<br/>
+j1cy (y) = jugador-1-coord-y; j2cy (y) = jugador-2-coord-y;<br/>
+j1m (n) = jugador-1-marcador; j2m (n) = jugador-2-marcador;<br/>
+j1n (texto) = jugador-1-nombre; j2n (texto) = jugador-2-nombre;<br/>
+Ejemplo: pcxy,55,-88; j1cy,77; j2cy,-99; j1m,5; j2m,3; j1n,Pepe; j2n,Luis; e,Jugando
+</p>
+-->
+
+<!-- campo naranja-->
+<img src="static/img_o.png" id="campo"/>
+
+<!-- red cian -->
+<img src="static/img_y.png" id="red"/>
+
+<!-- jugador 1 azul-->
+<img src="static/img_b.png" id="jugador1"/>
+
+<!-- jugador 2 rojo-->
+<img src="static/img_r.png" id="jugador2"/>
+
+<!-- pelota -->
+<img src="static/img_pg.png" id="pelota"/>
+
+<div id="info">
+<table>
+<tr id="limiteDuracionPartidoRow"><th>{% trans "Match duration limit" %}</th><td id="limiteDuracionPartido"></td></tr>
+<tr><th>{% trans "Match point limit" %}</th><td id="limitePuntosPartido"></td></tr>
+</table>
+</div>
+
+</body>
+</html>
