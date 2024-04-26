@@ -1,0 +1,11 @@
+asgiref
+certifi
+chardet
+Django
+idna
+polib
+pytz
+requests
+six
+sqlparse
+urllib3
