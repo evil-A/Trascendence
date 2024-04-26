@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./mysite
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./mysite/:/usr/src/mysite/
+    ports:
+        - "8000:80"
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+  db:
+    image: postgres:15.1
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
+  pgadmin:
+    image: dpage/pgadmin4:latest  # Use the official pgAdmin image
+    ports:
+      - "5050:80"  # Map container port 80 (pgAdmin) to host port 5050
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "email@trascendence.com"
+      PGADMIN_DEFAULT_PASSWORD: "contra123"
+
+volumes:
+  postgres_data:

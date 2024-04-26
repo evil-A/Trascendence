@@ -1,0 +1,23 @@
+1. LEVANTARLO: (En Directorio de docker-compose.yml):
+
+docker-compose up -d --build
+
+2. Web en: localhost (o localhost:80 o "myip":80)
+	*Se puede consular con el commando "ifconfig"
+
+
+3. pgadmin en: localhost:5050
+
+LOGEARSE EN PGADMIN:
+	EMAIL: "email@trascendence.com"
+        PASSWORD: "contra123"
+	  *Estos datos se encuentran en docker-compose.yml
+
+	Add new server en pgadmin:
+		GENERAL:
+			NAME: SQL_DATABASE
+		CONNECTION:
+			Host name: db
+			Username: hello_django
+			Password: hello_django
+	  *Todos estos datos se encuentran en mysite/mysite/settings.py (apartado DATABASES).
