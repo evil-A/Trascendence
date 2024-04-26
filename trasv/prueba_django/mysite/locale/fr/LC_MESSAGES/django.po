@@ -1,0 +1,273 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-08 21:25+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\base\forms.py:16
+msgid "User name"
+msgstr "Nom d'utilisateur"
+
+#: .\base\forms.py:17
+msgid "Password"
+msgstr "Mot de passe"
+
+#: .\mysite\settings.py:138
+msgid "English"
+msgstr "Anglaise"
+
+#: .\mysite\settings.py:139
+msgid "Spanish"
+msgstr "Espagnole"
+
+#: .\mysite\settings.py:140
+msgid "French"
+msgstr "Français"
+
+#: .\partidos\views.py:272
+msgid "Waiting player 2"
+msgstr "En attente du joueur 2"
+
+#: .\partidos\views.py:286
+msgid "Playing"
+msgstr "Jouant"
+
+#: .\partidos\views.py:290
+msgid "Match over"
+msgstr "Match terminé"
+
+#: .\templates\base\home_t.html:18
+msgid "Pong game"
+msgstr "Jeu de pong"
+
+#: .\templates\base\home_t.html:21
+#: .\templates\torneos\torneos_inscripcion_t.html:13
+msgid "User"
+msgstr "Utilisateur"
+
+#: .\templates\base\home_t.html:22
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: .\templates\base\home_t.html:24
+msgid "Quick match"
+msgstr "Match rapide"
+
+#: .\templates\base\home_t.html:27
+msgid "Play"
+msgstr "Jouer"
+
+#: .\templates\base\home_t.html:28
+#: .\templates\partidos\partidos_mlist_t.html:11
+msgid "List of my matches"
+msgstr "Liste de mes matchs"
+
+#: .\templates\base\home_t.html:29 .\templates\partidos\partidos_list_t.html:11
+msgid "List of matches"
+msgstr "Liste des matchs"
+
+#: .\templates\base\home_t.html:34
+msgid "Tournaments"
+msgstr "Tournois"
+
+#: .\templates\base\home_t.html:37
+#: .\templates\torneos\torneos_inscripcion_t.html:11
+msgid "Tournament registration"
+msgstr "Inscription au tournoi"
+
+#: .\templates\base\home_t.html:38 .\templates\torneos\torneos_info_t.html:11
+msgid "Tournament information"
+msgstr "Informations sur les tournois"
+
+#: .\templates\base\home_t.html:40
+msgid "Tournament play"
+msgstr "Jouer à un tournoi"
+
+#: .\templates\base\home_t.html:43
+msgid "Upcoming tournaments"
+msgstr "Tournois à venir"
+
+#: .\templates\base\home_t.html:51 .\templates\torneos\torneos_admin_t.html:11
+#: .\templates\torneos\torneos_edit_t.html:20
+msgid "Tournament administration"
+msgstr "Administration du tournoi"
+
+#: .\templates\base\home_t.html:58 .\templates\base\login_t.html:12
+#: .\templates\base\login_t.html:19
+msgid "Login"
+msgstr "Se connecter"
+
+#: .\templates\base\home_t.html:59 .\templates\base\signup_t.html:12
+#: .\templates\base\signup_t.html:19
+msgid "Signup"
+msgstr "S'inscrire"
+
+#: .\templates\base\login_t.html:11 .\templates\base\signup_t.html:11
+msgid "Welcome!"
+msgstr "Bienvenu!"
+
+#: .\templates\base\login_t.html:20
+msgid "I haven't signedup yet"
+msgstr "Je ne suis pas encore inscrit"
+
+#: .\templates\base\signup_t.html:20
+msgid "I have already signedup"
+msgstr "Je suis déjà inscrit"
+
+#: .\templates\partidos\pantallaPong_t.html:318
+msgid "back to home"
+msgstr "de retour à la maison"
+
+#: .\templates\partidos\pantallaPong_t.html:352
+msgid "Match duration limit"
+msgstr "Limite de durée des matchs"
+
+#: .\templates\partidos\pantallaPong_t.html:353
+msgid "Match point limit"
+msgstr "Limite de points de match"
+
+#: .\templates\partidos\partidos_list_t.html:15
+#: .\templates\partidos\partidos_mlist_t.html:15
+msgid "Player 1"
+msgstr "Joueur 1"
+
+#: .\templates\partidos\partidos_list_t.html:16
+#: .\templates\partidos\partidos_mlist_t.html:16
+msgid "Score player 1"
+msgstr "Ponctuation joueur 1"
+
+#: .\templates\partidos\partidos_list_t.html:17
+#: .\templates\partidos\partidos_mlist_t.html:17
+msgid "Player 2"
+msgstr "Joueur 2"
+
+#: .\templates\partidos\partidos_list_t.html:18
+#: .\templates\partidos\partidos_mlist_t.html:18
+msgid "Score player 2"
+msgstr "Ponctuation joueur 2"
+
+#: .\templates\partidos\partidos_list_t.html:19
+#: .\templates\partidos\partidos_mlist_t.html:19
+msgid "Beginning"
+msgstr "Début"
+
+#: .\templates\partidos\partidos_list_t.html:20
+#: .\templates\partidos\partidos_mlist_t.html:20
+msgid "Ending"
+msgstr "Fin"
+
+#: .\templates\partidos\partidos_list_t.html:21
+#: .\templates\partidos\partidos_mlist_t.html:21
+msgid "Duration"
+msgstr "Durée"
+
+#: .\templates\partidos\partidos_list_t.html:36
+#: .\templates\partidos\partidos_mlist_t.html:36
+#: .\templates\torneos\torneos_admin_t.html:13
+#: .\templates\torneos\torneos_admin_t.html:48
+#: .\templates\torneos\torneos_info_t.html:13
+#: .\templates\torneos\torneos_info_t.html:57
+#: .\templates\torneos\torneos_inscripcion_t.html:44
+msgid "Home"
+msgstr "Maison"
+
+#: .\templates\torneos\torneos_admin_t.html:15
+msgid "New"
+msgstr "Nouveau"
+
+#: .\templates\torneos\torneos_admin_t.html:19
+#: .\templates\torneos\torneos_admin_t.html:31
+msgid "Edit"
+msgstr "Modifier"
+
+#: .\templates\torneos\torneos_admin_t.html:20
+#: .\templates\torneos\torneos_admin_t.html:32
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\templates\torneos\torneos_admin_t.html:21
+#: .\templates\torneos\torneos_info_t.html:19
+#: .\templates\torneos\torneos_inscripcion_t.html:18 .\torneos\forms.py:8
+msgid "Tournament name"
+msgstr "Nom du tournoi"
+
+#: .\templates\torneos\torneos_admin_t.html:22
+#: .\templates\torneos\torneos_info_t.html:20
+#: .\templates\torneos\torneos_inscripcion_t.html:19 .\torneos\forms.py:10
+msgid "Start of registration"
+msgstr "Début des inscriptions"
+
+#: .\templates\torneos\torneos_admin_t.html:23
+#: .\templates\torneos\torneos_info_t.html:21
+#: .\templates\torneos\torneos_inscripcion_t.html:20 .\torneos\forms.py:15
+msgid "End of registration"
+msgstr "Fin de l'inscription"
+
+#: .\templates\torneos\torneos_admin_t.html:24
+#: .\templates\torneos\torneos_info_t.html:22
+#: .\templates\torneos\torneos_inscripcion_t.html:21 .\torneos\forms.py:20
+msgid "Start of matches"
+msgstr "Début des matchs"
+
+#: .\templates\torneos\torneos_admin_t.html:25
+#: .\templates\torneos\torneos_info_t.html:23
+#: .\templates\torneos\torneos_inscripcion_t.html:22 .\torneos\forms.py:24
+msgid "Maximum match duration in minutes"
+msgstr "Durée maximale des matchs en minutes"
+
+#: .\templates\torneos\torneos_admin_t.html:26
+#: .\templates\torneos\torneos_info_t.html:24
+#: .\templates\torneos\torneos_inscripcion_t.html:23 .\torneos\forms.py:25
+msgid "Minutes between matches"
+msgstr "Minutes entre les matchs"
+
+#: .\templates\torneos\torneos_admin_t.html:41
+#: .\templates\torneos\torneos_info_t.html:35
+#: .\templates\torneos\torneos_inscripcion_t.html:37
+msgid "Players registered"
+msgstr "Joueurs inscrits"
+
+#: .\templates\torneos\torneos_edit_t.html:11
+msgid "Edit tournement"
+msgstr "Modifier le tournoi"
+
+#: .\templates\torneos\torneos_edit_t.html:19
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: .\templates\torneos\torneos_info_t.html:18
+msgid "Phase"
+msgstr "Phase"
+
+#: .\templates\torneos\torneos_info_t.html:41
+msgid "Matches"
+msgstr "Matchs"
+
+#: .\templates\torneos\torneos_info_t.html:45
+msgid "Matches and results"
+msgstr "Matchs et résultats"
+
+#: .\templates\torneos\torneos_info_t.html:49
+msgid "Winners"
+msgstr "Gagnants"
+
+#: .\templates\torneos\torneos_inscripcion_t.html:28
+msgid "Registration/Cancel"
+msgstr "Inscription/Annulation"
+
+#~ msgid "Players"
+#~ msgstr "Joueurs"
