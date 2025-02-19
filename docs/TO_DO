@@ -1,0 +1,50 @@
+Regarding HTTPS, you'll need to:
+
+Update your nginx configuration
+Modify your WebSocket connection in the frontend to use 'wss://' instead of 'ws://'
+Configure SSL certificates
+
+Here's a basic nginx HTTPS configuration example:
+
+# microservices/nginx/nginx.conf
+server {
+    listen 443 ssl;
+    server_name your_domain.com;
+
+    ssl_certificate /etc/nginx/ssl/your_cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/your_key.pem;
+
+    location / {
+        proxy_pass http://transcendence:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /ws/ {
+        proxy_pass http://transcendence:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+}
+
+Update docker-compose.yml to include SSL:
+
+services:
+  nginx:
+    # ... existing config ...
+    ports:
+      - "443:443"  # Add HTTPS port
+    volumes:
+      - ./ssl:/etc/nginx/ssl  # Mount SSL certificates
+
+
+Would you like me to:
+
+Show you how to set up SSL certificates for HTTPS?
+Help with modifying the frontend code for secure WebSocket connections?
+Explain more about the nginx configuration for HTTPS?
