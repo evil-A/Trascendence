@@ -1,0 +1,39 @@
+docker exec -it trascendence-db-1 bash 
+
+psql -U postgres -d postgres
+
+\l
+\dt
+
+\d oauth2login_intrauser
+
+SELECT * FROM public.oauth2login_intrauser;
+
+
+
+
+Página de selección de autenticación:
+URL: http://localhost:8000/oauth2/auth_choice/
+Descripción: Esta página debería permitirte seleccionar el método de autenticación (OAuth o Login directo).
+
+Login directo (sin OAuth):
+URL: http://localhost:8000/oauth2/login/
+Descripción: Lleva a la vista de login directo, que debería mostrar un formulario de autenticación básico.
+
+Login con OAuth:
+URL: http://localhost:8000/oauth2/oauth_login/
+Descripción: Esta URL debería redirigirte al proveedor de OAuth (por ejemplo, 42). Si no te redirige, hay que verificar la configuración del OAuth.
+
+Redirección de OAuth:
+URL: http://localhost:8000/oauth2/login/redirect/?code=<tu_codigo>
+Descripción: Una vez que el proveedor de OAuth redirige al usuario a esta URL con un código, esta vista debe manejar el código y autenticar al usuario.
+
+Página de registro (si lo implementas):
+URL: http://localhost:8000/oauth2/register/
+Descripción: Esta página debería permitir registrar un nuevo usuario si no existe uno en el sistema.
+
+Redirección a la SPA (después de iniciar sesión):
+URL: http://localhost:8000/
+Descripción: Esta debería ser la página principal de tu SPA. Si el usuario no ha iniciado sesión, debería redirigir a auth-choice para seleccionar un método de autenticación.
+
+

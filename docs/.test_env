@@ -1,0 +1,23 @@
+UID="the intra uid"
+SECRET="the intra secret"
+AUTH_URL_INTRA="the intra url"
+
+# PostgreSQL Database Configuration
+DB_NAME="postgres_name"
+DB_USER="postgres_user"
+DB_PASSWORD="postgres_password"
+DB_HOST="postgress_host"
+DB_PORT="postgress_port"
+
+# Django configuration
+DJANGO_SUPERUSER_PASSWORD="django_password"
+DJANGO_SUPERUSER_USERNAME="django_user"
+DJANGO_SUPERUSER_EMAIL="django_email"
+
+# SMTP
+EMAIL_ADDRESS = "gmail_account"
+EMAIL_PASSWORD = "app_passowrd"
+
+#JWT
+JWT_SECRET = "to encrypt jwt"
+JWT_ALGORITHM = "to encrypt jwt" 

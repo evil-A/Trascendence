@@ -1,0 +1,121 @@
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Pong</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Game dropdown -->
+                <li class="nav-item dropdown">
+                    <button class="nav-link dropdown-toggle btn btn-link" id="gameDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-controller"></i> Game
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="gameDropdown">
+                        <li>
+                            <button class="dropdown-item" 
+                                    hx-get="/oauth2/game/ai"
+                                    hx-trigger="click"
+                                    hx-target="#main-content"
+                                    hx-indicator="#loading">
+                                Play vs AI
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" 
+                                    hx-get="/oauth2/game/player"
+                                    hx-trigger="click"
+                                    hx-target="#main-content"
+                                    hx-indicator="#loading">
+                                Play vs Player
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Chat -->
+                <li class="nav-item">
+                    <button class="nav-link btn btn-link" 
+                            hx-get="/oauth2/chat/"
+                            hx-trigger="click"
+                            hx-target="#main-content"
+                            hx-indicator="#loading">
+                        <i class="bi bi-chat-dots"></i> Chat
+                    </button>
+                </li>
+
+                <!-- Tournaments -->
+                <li class="nav-item">
+                    <button class="nav-link btn btn-link" 
+                            hx-get="/oauth2/tournaments/"
+                            hx-trigger="click"
+                            hx-target="#main-content"
+                            hx-indicator="#loading">
+                        <i class="bi bi-trophy"></i> Tournaments
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Profile and Logout -->
+            <div class="navbar-nav">
+                <div class="nav-item dropdown">
+                    <button class="nav-link dropdown-toggle btn btn-link" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ user.avatar }}" alt="Profile" class="rounded-circle" width="32" height="32">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li>
+                            <button class="dropdown-item" 
+                                    hx-get="/oauth2/profile/"
+                                    hx-trigger="click"
+                                    hx-target="#main-content"
+                                    hx-indicator="#loading">Profile</button>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="/oauth2/logout/">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Loading indicator -->
+    <div id="loading" class="htmx-indicator text-center d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    
+    <div id="main-content">
+        <!-- Initial content or welcome message -->
+        <div class="text-center">
+            <h2>Welcome to Pong!</h2>
+            <p>Select an option from the navigation bar to get started.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Debug info -->
+<div id="debug-info" class="fixed-bottom bg-dark text-white p-2 d-none">
+    <pre id="debug-output"></pre>
+</div>
+
+<script>
+    // Debug HTMX events
+    document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        console.log('Request started:', evt.detail.requestConfig);
+    });
+    
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+        console.log('Request finished:', evt.detail.xhr.status);
+    });
+    
+    document.body.addEventListener('htmx:responseError', function(evt) {
+        console.log('Request error:', evt.detail.xhr.status);
+    });
+</script>
+{% endblock %}
