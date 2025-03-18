@@ -1,0 +1,54 @@
+{%block content %}
+<div class="d-flex flex-column flex-grow-1 w-100 text-center">
+    <br>
+    <h2>Game History</h2>
+    <br>
+    <!-- Add a fixed-height wrapper around the scrollable area -->
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+            Date
+        </li>
+        <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+            Players
+        </li>
+         <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+            Result
+        </li>
+    </ul>
+    <div class="flex-grow-1 overflow-auto" style="max-height: calc(100vh - 30vh);">
+        {% for game in data %}
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                    <h4>{{game.date|date:"d-m-Y H:i"}}</h4>
+                </li>
+                <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                    <div class = "row w-100">
+                        <div class = 'col-5 text-end h4' style="flex: 1; white-space: normal; word-break: break-word; text-align: center;">
+                            {{game.user1}}
+                        </div>
+                        <div class = 'col-2 text-center h4'>
+                            Vs
+                        </div>
+                        <div class = 'col-2 text-start h4' style="flex: 1; white-space: normal; word-break: break-word; text-align: center;">
+                            {{game.user2|default_if_none:"AI"}}
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                    <div class = "row w-100">
+                        <div class = 'col-5 text-end h4'>
+                            {{game.score1}}
+                        </div>
+                        <div class = 'col-2 text-center h4'>
+                            -
+                        </div>
+                        <div class = 'col-2 text-start h4'>
+                            {{game.score2}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{%block content %}
+<div class="d-flex flex-column flex-grow-1 w-100 text-center">
+    <div class="flex-grow-1 overflow-auto" style="max-height: calc(100vh - 30vh);">
+        {% for apply in applications %}
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                    <img src="{{apply.user_from.avatar}}" class = "rounded-circle" width="50" height = "50"/>
+                    <a class = 'h4' hx-get="/oauth2/profile?user={{apply.user_from.id}}" hx-target="#main-content", hx-push-url="true" style=" flex: 1; white-space: normal; word-break: break-word; text-align: center;" >{{apply.user_from.username}}</a>
+                </li>
+                <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                    <button type="button" class = "btn btn-success mx-"  hx-get = "/social/friend/accept?id={{apply.id}}" hx-target = "#myTabContent" hx-on:click="addFriend()">Accept</button>
+                    <button type="button" class = "btn btn-danger mx-1" hx-get = "/social/friend/reject?id={{apply.id}}" hx-target = "#myTabContent" hx-on:click="removeApplication()">Reject</button>
+                </li>
+            </ul>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function removeApplication(){
+        applications = document.getElementById('pendingApplications')
+        content = applications.innerHTML
+        if (content === '1') {applications.remove()}
+        else {applications.innerHTML = Number(content) - 1}
+    }
+    function addFriend(){
+        count = document.getElementById('friendCount')
+        friend = 1 + Number(count.innerHTML.split(" ")[1])
+        count.innerHTML = "Friends: " + friend
+        removeApplication()
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% block content %}
+<div class="container mt-4 text-center">
+    <h1>Waiting for a match</h1>
+    <div class="spinner-border" role="status"></div>
+    <p>Waiting for oponent...</p>
+    <!-- Change leave button by a timer -->
+    <div id = 'countdown'></div>
+    <div class="btn-danger mt-2 d-none" hx-get="/tournament/" hx-target="#main-content" hx-push-url="false" hx-on:click="socket.close(); enableNav()" id="leave">Leave</div>
+</div>
+<script>
+{
+    var socket = new WebSocket('wss://'+ window.location.host + "/ws/tournament-room/{{tournament.id}}/");
+    var x = null
+    
+    function manageHistory(){
+        socket.close(1000)
+        enableNav()
+    }
+
+    function disableNav() {
+            const navbarButtons = document.querySelectorAll('.nav-link');
+            navbarButtons.forEach(link => {link.classList.add('disabled')});
+            window.addEventListener('popstate', manageHistory)
+    };
+    
+    function enableNav() {
+        window.removeEventListener('popstate', manageHistory)
+        const navbarButtons = document.querySelectorAll('.nav-link');
+        navbarButtons.forEach(link => {               
+            link.classList.remove('disabled')
+        });
+    }
+    
+    disableNav()
+
+    socket.onopen = (event) => {
+        var start = new Date().getTime();
+        x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = 60 - Math.ceil((now - start)/1000);
+            if (distance >= 0){
+                document.getElementById("countdown").innerHTML = "Your oponent will be declated absent in " + distance + "s"
+            }
+            else{
+                clearInterval(x)
+                socket.send(JSON.stringify('timeout'))
+            }
+        }, 1000);
+    }
+    
+    socket.onmessage = function(event) {
+        window.removeEventListener('popstate', manageHistory)
+        clearInterval(x)
+        x = null
+        const data = JSON.parse(event.data);
+        if (data.type === 'load'){
+            document.getElementById("main-content").innerHTML = data.html
+            const scripts = document.getElementById("main-content").getElementsByTagName("script");
+            for (let i = 0; i < scripts.length; i++) {
+                const script = document.createElement("script");
+                if (scripts[i].src) {
+                    // If the script has a src attribute, load it as an external script
+                    script.src = scripts[i].src;
+                    document.head.appendChild(script);
+                } 
+                else {
+                    // If the script is inline, execute its content
+                    script.textContent = scripts[i].textContent;
+                    document.body.appendChild(script);
+                }
+            }       
+        }
+        if (data.type === 'timeout'){
+            document.getElementById('leave').click()
+        }
+    }
+}
+</script>
+{% endblock %}

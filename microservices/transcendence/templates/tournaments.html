@@ -1,4 +1,71 @@
-<div class="container">
-    <h2>Tournaments</h2>
-    <p>Vas perdiendo</p>
+{% block content %}
+<div class="container-fluid text-center" hx-get = "/tournament/" hx-trigger="every 10s" hx-get="/tournament/" hx-push-url="false" hx-target = '#main-content'>
+    <br>
+    {% if tournament %}
+        <div class="d-flex flex-column flex-grow-1 w-100 text-center">
+            <br>
+            <div>
+                {% if tournament.status == 'P' %}
+                    <h2>The tournament will start soon</h2>
+                    <button class = 'btn btn-danger' hx-get = '/tournament/leave' hx-trigger = "click" hx-target = '#main-content'> Leave </button>
+                {% elif tournament.status == 'A' %}
+                    <h2>The tournament is on round {{tournament.current_round}}/{{tournament.rounds}}</h2>
+                    {% if next %}
+                        <h2>Next Match: {{next.0.user.username}} vs. {{next.1.user.username}}</h2>
+                        <button class='btn btn-success' hx-get = /tournament/wait?id={{tournament.id}} hx-target="#main-content" hx-push-url="false"> Next Game</button>
+                    {% else %}
+                        <h2>Wait for the next round</h2>
+                    {% endif %}
+                {% else %}
+                    <h2>Last tournament reults</h2>
+                    <button class = 'btn btn-primary' hx-get = '/tournament/join' hx-trigger="click" hx-target = '#main-content'> Join a tournament </button>
+                {% endif %}
+            </div>
+            <br>
+            <!-- Add a fixed-height wrapper around the scrollable area -->
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+                    Position
+                </li>
+                <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+                    Player
+                </li>
+                <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+                    Played Games
+                </li>
+                <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+                    Score
+                </li>
+                <li class="list-group-item list-group-item-info d-flex align-items-center justify-content-center h3" style="flex: 1; white-space: nowrap;">
+                    Point difference
+                </li>
+            </ul>
+            <div class="flex-grow-1 overflow-auto" style="max-height: calc(100vh - 30vh);">
+                {% for player in tournament.get_standings %}
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                            <h4>{{forloop.counter}}</h4>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; text-align: center;">
+                            <img src="{{player.user.avatar}}" class = "rounded-circle" width="50" height = "50"/>
+                            <h4 class="w-100" style="flex: 1; white-space: normal; word-break: break-word; text-align: center;">{{player.user.username}}</h4>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                            {{player.played_matches}}
+                        </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                            {{player.score}}
+                        </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                            {{player.point_difference}}
+                        </li>
+                    </ul>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <button class = 'btn btn-primary' hx-get = '/tournament/join/' hx-trigger="click" hx-target = '#main-content'> Join a tournament </button>
+        <h2>You haven't played any toutnaments yet</h2>
+    {% endif %}
 </div>
+{% endblock %}

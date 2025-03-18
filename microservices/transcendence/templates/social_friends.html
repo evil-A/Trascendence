@@ -1,0 +1,45 @@
+{%block content %}
+<div class="d-flex flex-column flex-grow-1 w-100 text-center">
+    <div class="flex-grow-1 overflow-auto" style="max-height: calc(100vh - 30vh);">
+        {% for friend in friends %}
+            <ul class="list-group list-group-horizontal">    
+                {% if friend.user_from != me %}
+                    <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                        <img src="{{friend.user_from.avatar}}" class = "rounded-circle" width="50" height = "50"/>
+                        {% if  friend.user_from.online == "A" %}
+                            <span class="logged-in" style="color: green;">●</span>
+                        {% elif friend.user_from.online == "I" %}
+                            <span class="logged-in" style="color: orange;">●</span>
+                        {% else %}
+                            <span class="logged-in" style="color: red;">●</span>
+                        {% endif %}
+                        <a class = 'h4' hx-get="/oauth2/profile?user={{friend.user_from.id}}" hx-target="#main-content", hx-push-url="true" style="flex: 1; white-space: normal; word-break: break-word; text-align: center;">{{friend.user_from.username}}</a>
+                    </li>
+                {% else %}
+                    <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                        <img src="{{friend.user_to.avatar}}" class = "rounded-circle" width="50" height = "50"/>
+                        {% if  friend.user_to.online == "A" %}
+                            <span class="logged-in" style="color: green;">●</span>
+                        {% elif friend.user_to.online == "I" %}
+                            <span class="logged-in" style="color: orange;">●</span>
+                        {% else %}
+                            <span class="logged-in" style="color: red;">●</span>
+                        {% endif %}
+                        <a class = 'h4' hx-get="/oauth2/profile?user={{friend.user_to.id}}" hx-target="#main-content", hx-push-url="true" style="flex: 1; white-space: normal; word-break: break-word; text-align: center;">{{friend.user_to.username}}</a>
+                    </li>
+                {% endif %}
+                <li class="list-group-item d-flex align-items-center justify-content-center" style="flex: 1; white-space: nowrap;">
+                    <button type="button" class = "btn btn-danger mx-1" hx-get = "/social/friend/remove?id={{friend.id}}" hx-target = "#myTabContent" hx-on:click="removeFriend()">Remove Friend</button>
+                </li>
+            </ul>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function removeFriend(){
+        count = document.getElementById('friendCount')
+        friend = Math.max(-1 + Number(count.innerHTML.split(" ")[1]), 0)
+        count.innerHTML = "Friends: " + friend
+    }
+</script>
+{% endblock %}

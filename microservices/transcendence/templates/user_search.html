@@ -1,0 +1,16 @@
+{% block content %}
+    {% if results %}
+        {% for result in results %}
+            <li>
+                <img src="{{result.avatar}}" class = "rounded-circle" width="32" height = "32"/>
+                <span>
+                    <a hx-get ="/oauth2/profile?user={{result.id}}" hx-push-url="true" hx-target = #main-content class = "btn-link">
+                        <strong>{{result.username}}</strong>
+                    </a>
+                </span>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li>No mathces found</li>
+    {% endif %}
+{% endblock %}

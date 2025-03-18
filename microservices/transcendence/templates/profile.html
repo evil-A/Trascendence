@@ -1,5 +1,63 @@
-<div class="container">
-    <h2>Profile</h2>
-    <p>Welcome, {{ user.username }}</p>
-    <img src="{{ user.avatar}}" alt="Profile picture" class="rounded-circle" width="100" height="100">
+{% block content %}
+<br>
+<div class="card align-items-center w-100" id = "profile">
+    <div class = 'row w-100 align-items-center text-center'>
+        <div class = "col-2">
+            <img src = "{{user.avatar}}" class = "rounded-circle" width = 200 height = 200 id="photo"/>
+        </div>
+        <div class = col-2>
+            <h1> {{user.username}} </h1>
+        </div>
+        <div class = "col-4 text-center justify-items-center">
+            <div class = "row w-100">
+                <div claas = "col-12"><h1>Stats</h1></div>
+            </div>
+            <div class = "row w-100">
+                <div class = "col-4 text-center">
+                    <h1> Played </h1>
+                    <h1>{{games}}</h1>
+                </div>
+                <div class = "col-4 text-center">
+                    <h1 class = "text-success"> Won </h1>
+                    <h1 class = "text-success">{{victory}}</h1>
+                </div>
+                <div class = "col-4 text-center">
+                    <h1 class = "text-danger"> Lost </h1>
+                    <h1 class = "text-danger">{{defeat}}</h1>
+                </div>
+            </div>
+        </div>
+        <div class = "col-2 text-center">
+            <div class = "row w-100">
+                <div claas = "col-12"><h1 id="friendCount">Friends: {{friends}}</h1></div>
+            </div>
+        </div>
+        <div class = "col-2 align-self-start text-end">
+                {% if edit %}
+                    <button type="button" class="btn btn-primary" hx-get= "/oauth2/profile/edit/" hx-target = '#profileContent'>
+                        Edit profile
+                    </button>
+                    <button type="button" class="btn btn-primary" hx-get = "/social/" hx-target = '#profileContent'>My Relations</button>
+                    <button type = 'button' class = 'btn btn-primary' hx-get = "/game/history" hx-target = '#profileContent'>Game History</button>
+                {% else %}
+                    <button type = 'button' class = 'btn btn-primary' hx-get = "/game/history?user={{user.id}}" hx-target = '#profileContent'>Game History</button>
+                    {% if not friend and canApply%}
+                        <button type="button" class = "btn btn-success" hx-get = "/social/friend/apply?id={{user.id}}" hx-push-url="/oauth2/profile/" hx-target = "#main-content">Add Friend</button>
+                    {% endif %}
+                {% endif %}
+        </div>
+    </div>
 </div>
+<div id = 'profileContent' class = "container-fluid text-center vh-100" hx-push-url="false">
+    {% if profile_content %}
+        {{ profile_content|safe }}
+    {% endif %}
+</div>
+<script>
+    document.addEventListener("change-photo", (event) =>
+    {
+        //console.log(document.getElementById("photo").src, document.getElementById("avatar").src)
+        document.getElementById("avatar").src = document.getElementById("photo").src
+    });
+ </script>
+{% endblock %}

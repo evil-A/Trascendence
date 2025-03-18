@@ -1,12 +1,15 @@
+{% load static %}
+
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Kickoff Stars</a>
+        <a class="navbar-brand nav-link" hx-get="/home" hx-target="#main-content">Pong</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
+                <!-- Game dropdown -->
                 <li class="nav-item dropdown">
                     <button class="nav-link dropdown-toggle btn btn-link" id="gameDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-controller"></i> Game
@@ -14,53 +17,54 @@
                     <ul class="dropdown-menu" aria-labelledby="gameDropdown">
                         <li>
                             <button class="dropdown-item" 
-                                    hx-get="/oauth2/game/ai"
+                                    hx-get="/game/ai"
                                     hx-trigger="click"
                                     hx-target="#main-content"
                                     hx-indicator="#loading"
-                                    hx-push-url="true">
+                                    hx-push-url="/home">
                                 Play vs AI
                             </button>
                         </li>
                         <li>
                             <button class="dropdown-item" 
-                                    hx-get="/oauth2/game/player"
+                                    hx-get="/game/local"
                                     hx-trigger="click"
                                     hx-target="#main-content"
                                     hx-indicator="#loading"
-                                    hx-push-url="true">
-                                Play vs Player
+                                    hx-push-url="/home">
+                                Local game
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" 
+                                    hx-get="/game/wait"
+                                    hx-trigger="click"
+                                    hx-target="#main-content"
+                                    hx-indicator="#loading"
+                                    hx-push-url="/home">
+                                Remote game
                             </button>
                         </li>
                     </ul>
                 </li>
 
+                <!-- Tournaments -->
                 <li class="nav-item">
                     <button class="nav-link btn btn-link" 
-                            hx-get="/chat/"
+                            hx-get="/tournament/"
                             hx-trigger="click"
                             hx-target="#main-content"
-                            hx-indicator="#loading"
-                            hx-push-url="true">
-                        <i class="bi bi-chat-dots"></i> Chat
-                    </button>
-                </li>
-
-                <li class="nav-item">
-                    <button class="nav-link btn btn-link" 
-                            hx-get="/oauth2/tournaments/"
-                            hx-trigger="click"
-                            hx-target="#main-content"
-                            hx-indicator="#loading"
-                            hx-push-url="true">
+                            hx-indicator="#loading">
                         <i class="bi bi-trophy"></i> Tournaments
                     </button>
                 </li>
             </ul>
+
+            <!-- Profile and Logout -->
             <div class="navbar-nav">
                 <div class="nav-item dropdown">
                     <button class="nav-link dropdown-toggle btn btn-link" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ user.avatar }}" alt="Profile" class="rounded-circle" width="32" height="32">
+                        <img src="{{ user.avatar }}" alt="Profile" class="rounded-circle" width="32" height="32" id="avatar">
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li>
@@ -68,14 +72,11 @@
                                     hx-get="/oauth2/profile/"
                                     hx-trigger="click"
                                     hx-target="#main-content"
-                                    hx-indicator="#loading"
-                                    hx-push-url="true">
-                                Profile
-                            </button>
+                                    hx-indicator="#loading">Profile</button>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="/oauth2/logout/">Logout</a>
+                            <a class="dropdown-item" href="/oauth2/logout/" hx-push-url="/">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -83,42 +84,49 @@
         </div>
     </div>
 </nav>
-
-<div class="container mt-4">
+<div class="container-fluid">
+    <!-- Loading indicator -->
     <div id="loading" class="htmx-indicator text-center d-none">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    
-    <div id="main-content">
-        <div class="text-center">
-            <h2>Welcome to Pong!</h2>
-            <p>Select an option from the navigation bar to get started.</p>
-        </div>
+    <div id="main-content" class="container-fluid" hx-history-elt>
+        {% if main_content %}
+            {{ main_content|safe }} <!-- The content to be reloaded in F5-->
+        {% else  %} <!-- Initial content or welcome message -->
+            <div class="text-center">
+                <h2>Welcome to Pong!</h2>
+                <p>Select an option from the navigation bar to get started.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
-{% endblock %}
 
-<!--
+<!-- Debug info -->
 <div id="debug-info" class="fixed-bottom bg-dark text-white p-2 d-none">
     <pre id="debug-output"></pre>
 </div>
-
 <script>
-
-    // Mostrar información de depuración (opcional)
-    document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        document.getElementById('debug-info').classList.remove('d-none');
-        document.getElementById('debug-output').innerText = 'Request started: ' + evt.detail.requestConfig.url;
-    });
-
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-        document.getElementById('debug-output').innerText = 'Request finished: ' + evt.detail.xhr.status;
-    });
-
-    document.body.addEventListener('htmx:responseError', function(evt) {
-        document.getElementById('debug-output').innerText = 'Request error: ' + evt.detail.xhr.status;
-    });
+    // document.addEventListener("game-event", (event) => {
+    //     import("{% static 'game/local_game.js' %}?v=" + new Date().getTime())
+    //             .then(module => {
+    //                 module.startGame(); // Ensure `initializeGame` is exported in local_game.js
+    //             })
+    //             .catch(error => console.error("Failed to load game:", error));
+    //     }
+    // );
+    // Debug HTMX events
+    // document.body.addEventListener('htmx:beforeRequest', function(evt) {
+    //     console.log('Request started:', evt.detail.requestConfig);
+    // });
+    
+    // document.body.addEventListener('htmx:afterRequest', function(evt) {
+    //     console.log('Request finished:', evt.detail.xhr.status);
+    // });
+    
+    // document.body.addEventListener('htmx:responseError', function(evt) {
+    //     console.log('Request error:', evt.detail.xhr.status);
+    // });
 </script>
--->
+{% endblock %}

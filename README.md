@@ -13,3 +13,5 @@ This file will be stored in the docs folder.
 
 ## Documentation
 All useful source of information, or standards and designs related with the project must be stored in the docs folder. so that everyone can access them.
+
+- Data Model: https://drive.google.com/file/d/1_9ZfTnpRNzKuZSW2STzZiIbRpceyWnUA/view?usp=sharing

@@ -1,13 +1,13 @@
 #version : '3.9'
 
 services:
-  nginx:
-    build: ./microservices/nginx/
-    ports:
-      - "8080:80"
-    env_file: .env
-    networks:
-      - default
+  # nginx:
+  #   build: ./microservices/nginx/
+  #   ports:
+  #     - "8080:80"
+  #   env_file: .env
+  #   networks:
+  #     - default
   
   db:
     image: postgres:13
@@ -20,14 +20,7 @@ services:
     networks:
       - default
 
-  redis:
-    image: redis:alpine
-    ports:
-      - "6380:6379"
-    networks:
-      - default
-
-  transcendence:
+  trannscendence:
     build: ./microservices/transcendence/
     ports:
       - "8000:8000"
@@ -36,10 +29,8 @@ services:
       - default
     depends_on:
       - db
-      - redis
     volumes:
       - ./microservices/transcendence:/app
-      - ./microservices/transcendence/static:/app/static
 
 volumes:
   postgres_db:

@@ -1,4 +1,207 @@
-<div class="container">
-    <h2>Game</h2>
-    <p>Estas jugando con otro jugador</p>
+{% load static %}
+{% block content %}
+<div class="container-fluid" id="game">   
+<dialog id="EndGameModalDialog" class="modal-dialog-cente w-25 ratio-16x9">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title align-items-center" id="EndGameModalTitle">Final result</h5>
+                </div>
+                <div class="modal-body text-center" id="EndGameModalContent"></div>
+            <div class="modal-footer">
+                {% if game.tournament %}
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" hx-get = '/tournament/' hx-target="#main-content" hx-on:click="enableNav()" hx-push-url="false" id="button">Close</button>
+                {% else %}
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" hx-get = '/home/' hx-target="#main-content" hx-on:click="enableNav()" hx-push-url="false" id="button">Close</button>
+                {% endif %}
+            </div>
+</dialog>
+    <div class="row vh-100 w-100 align-items-center text-center" id="game-board">
+        <div class="col-2">
+        {% if not local %}
+            {% if user2 %}
+                <div class="row">
+                    <div class = 'col'>
+                        <img src="{{ user2.avatar }}" alt="user2" class="img-responsive" width = 233 height = 350>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class = 'col'>
+                        <h2>{{user2.username}}</h2>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class = 'col'>
+                         <img src="/media/profile_avatar/ai.png" alt="user2" class="img-responsive" width = 233 height = 350>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class = 'col'>
+                    <h2>AI</h2>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        </div>
+        <div class="col-8" hx-get = "/game/jwt/?id={{game.tournament.id}}" hx-trigger="every 600s" hx-push-url="false">
+            <div class="ratio ratio-16x9 border borde-5 border-dark">
+                <canvas id="pongCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-2">
+        {% if not local %}
+            <div class="row">
+                <div class = 'col'>
+                    <img src="{{ user1.avatar }}" alt="user1" class="img-responsive" width = 233 height = 350>
+                </div>
+            </div>
+            <div class="row">
+                <div class = 'col'>
+                    <h2>{{user1.username}}</h2>
+                </div>
+            </div>
+        {% endif %}
+        </div>        
+    </div>
 </div>
+{% if user2 %}
+    <script>
+    {
+        const CANVAS = document.getElementById('pongCanvas');
+        const CONTEXT = CANVAS.getContext('2d');
+        
+        //Adjust canvas pixel density
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        CANVAS.width = CANVAS.clientWidth * devicePixelRatio;
+        CANVAS.height = CANVAS.clientHeight * devicePixelRatio;
+        CONTEXT.scale(devicePixelRatio, devicePixelRatio);
+        
+        const HEIGHT = CANVAS.clientHeight;
+        const WIDTH = CANVAS.clientWidth;
+        
+        let user_id = '{{ user.id }}';
+        let game_id = '{{ room_id }}';
+        //Initial game values
+        let scores = [0,0];
+        let paddles = [0.4, 0.4];
+        let ball = [0.5, 0.5];
+        let disconnected = false
+        let disconnection = false
+        let move = false
+
+        const socket = new WebSocket('wss://'+ window.location.host + '/ws/game/' + '{{ room_id }}' + '/')
+        disableNav();
+
+        socket.onmessage = (event) => {
+            let data = JSON.parse(event.data);
+            if (data.type === 'start_game') {
+                draw(scores, paddles, ball)
+                move = true
+            }
+            else if (data.type === 'game_status'){
+                scores = data['scores'],
+                ball = data['ball'],
+                paddles = data['paddles']
+                draw(scores, paddles, ball)
+                move = true
+            }
+            
+            else if (data.type === 'end_game'){
+                disconnection = data['disconnection']
+                scores = data['scores']
+                socket.close(1000)
+                move = false
+            }
+            else if (data.type === 'disconnected')
+            {
+                disconnected = true
+            }
+        };
+
+        function key_handler(event) {
+            switch (event.key) {
+                case "ArrowUp":
+                    if (move){
+                        socket.send(
+                        JSON.stringify({
+                        action: 'paddle',
+                        direction: -1}));
+                        move = false
+                    }
+                    break;
+                case "ArrowDown":
+                    if (move){
+                        socket.send(
+                        JSON.stringify({
+                        action: 'paddle',
+                        direction: 1}));
+                        move = false
+                    }
+                    break;
+                }
+        }
+        document.addEventListener("keydown", key_handler);
+
+        function draw(scores, paddles, ball){
+            CONTEXT.clearRect(0, 0, WIDTH, HEIGHT);
+            CONTEXT.fillStyle = 'black';
+            CONTEXT.font = HEIGHT *.2 + "px Arial";
+            CONTEXT.textAlign = 'center';
+            //Ball
+            CONTEXT.beginPath()
+            CONTEXT.arc(ball[0]*WIDTH, ball[1]*HEIGHT, WIDTH*0.02, 0, Math.PI * 2);
+            CONTEXT.fill();
+            //paddles
+            CONTEXT.fillRect(0,             paddles[0]*HEIGHT, WIDTH*.02, HEIGHT*.2);
+            CONTEXT.fillRect(WIDTH*0.98,    paddles[1]*HEIGHT, WIDTH*.02, HEIGHT*.2);
+            //Scores
+            CONTEXT.fillText(scores[0], WIDTH*.25, HEIGHT*.5);
+            CONTEXT.fillText(scores[1], WIDTH*.75, HEIGHT*.5);
+        }
+        
+        socket.onclose = (event) => {
+            document.removeEventListener("keydown", key_handler);
+            document.getElementById("game-board").innerHTML = ""
+            let modal =  document.getElementById("EndGameModalDialog");
+            if (disconnected){
+                document.getElementById("EndGameModalTitle").innerText = "You disconnected from the game"
+            }
+            if (disconnection){
+                document.getElementById("EndGameModalTitle").innerText = "The other player disconnected"
+            }
+            document.getElementById("EndGameModalContent").innerHTML = scores[0] + " - " + scores[1]
+            modal.showModal();
+            htmx.process(modal);
+        };
+
+        function disableNav() {
+            const navbarButtons = document.querySelectorAll('.nav-link');
+            navbarButtons.forEach(link => {link.classList.add('disabled')});
+        };
+    }
+    </script>
+{% else %}
+    <script>
+    {
+        function game_event(){
+            import("{% static 'game/local_game.js' %}?v=" + new Date().getTime())
+                .then(module => {
+                    module.startGame('{{ local }}'); // Ensure `initializeGame` is exported in local_game.js
+                })
+                .catch(error => console.error("Failed to load game:", error));
+            document.removeEventListener("game-event", game_event)
+        }
+        
+        document.addEventListener("game-event", game_event)
+    }
+    </script>
+{% endif %}
+<script>
+    function enableNav() {
+        const navbarButtons = document.querySelectorAll('.nav-link');
+        navbarButtons.forEach(link => {               
+            link.classList.remove('disabled')
+        });
+    }
+</script>
+{% endblock %}
